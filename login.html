@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="center">
+        <h1>Login</h1>
+        <form id="loginForm" method="post">
+            <div class="txt_field">
+                <input type="text" id="email" required>
+                <span></span>
+                <label>Email</label>   
+            </div>
+            <div class="txt_field">
+                <input type="password" id="password" required>
+                <span></span>
+                <label>Password</label>
+            </div>
+
+            <div class="pass">Forgot Password?</div>
+
+            <a><input href="index4.html" type="submit" value="Login"></a>
+            
+            <p class="signup_link">Don't have an account? <a href="crud.html">Register</a></p>
+            <div id="loginError" class="text-danger text-center"></div>
+        </form>
+    </div>
+    <script src="login.js"></script>
+    <!-- <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            // Attempt to log in the user
+            if (loginUser(email, password)) {
+                alert('Login successful!');
+                // Redirect to dashboard or homepage
+            } else {
+                document.getElementById('loginError').innerText = 'Invalid email or password';
+            }
+     
+        });    
+           function redirectToLogin() {
+    // Redirect to the ekomers window
+    window.location.href = "index4.html";
+    }
+    </script> -->
+</body>
+</html>

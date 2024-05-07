@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management System</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  
+  <style>
+      body{
+      /* font-family:Verdana, Geneva, Tahoma, sans-serif ; */
+      background:linear-gradient(120deg, #0047A7, #29D3FD);
+      /* background-image: url("crudbg2.png"); */
+      height: 100vh;
+      overflow: hidden;
+      
+     }
+     h1{
+      color: #353535;
+      margin-left: 30%;
+     }
+     #searchInput{
+      width: 20%;
+      margin-top: 10px;
+      margin-bottom: 20px;
+     }
+     .container{
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);   
+        background: #FEFCFC;
+        border-radius: 10px;
+        padding: 16px;
+        box-shadow: 10px 10px 5px #353535 solid;
+      
+     }
+     .table{
+        background: linear-gradient(120deg, #b8b8b5, #919ca9 );
+        border-radius: 15px;
+        color: #1c1c1b;
+        font-weight: 500;  
+     }
+     .list{
+        background-color: #353535;
+        color: #d9d8dc;
+        border-radius: 15px;
+     }
+    .btn_btn-primary{
+        height: 30px;
+        margin-bottom: 10px;
+        background-color: #2691d9;
+        border-radius: 6.5px;
+        border: 1px solid;
+        color: #d9d8dc;
+        cursor: pointer;
+        outline: none;
+        font-weight: 500;
+    }
+    .btn_btn-primary:hover{
+         border-color: #2691d9;
+         transition: .5s;
+         color:#fff;
+    }
+    .btn_login {
+        margin: 0;      
+        text-align: center;
+        font-size: 16px;
+        color: #000;
+    }
+    .btn_login a{ 
+      color: #2691d9;
+      text-decoration: none;
+    }
+    
+    .btn_login a:hover{
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  
+    <h1>User Management System</h1>
+    <input type="text" id="searchInput" onkeyup="searchUsers()" placeholder="Search by Email...">
+    <!--<button type="button" class="btn_btn-primary" onclick="openCreateUserModal()">Create User</button> -->
+    <!-- <p class="btn_login">Already have an account? <a href="login.html" target="_blank" >Login</a></p> -->
+    <!-- <a><button href="login.html" type="button" class="btn_login" onclick="">Login</button></a> -->
+    <table class="table">
+      <thead >
+        <tr class="list">
+          <th>Username</th>
+          <th>Email</th>
+          <th>Contact Number</th>
+          <th>Location</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <!-- User data will be inserted here -->
+      </tbody>
+    </table>
+    <p class="btn_login">Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <!-- Floating create/edit user modal -->
+  <div id="userModal" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create User</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="userForm">
+            <div class="form-group">
+              <label for="username">Username:</label>
+              <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password:</label>
+              <input type="password" class="form-control" id="confirmPassword" required>
+            </div>
+            <div class="form-group">
+              <label for="contactNumber">Contact Number:</label>
+              <input type="text" class="form-control" id="contactNumber" required>
+            </div>
+            <div class="form-group">
+              <label for="location">Location:</label>
+              <input type="text" class="form-control" id="location" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveUserBtn">Create</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="crud.js"></script>
+
+  <!-- <script>
+    // Define functions for CRUD operations, search, and modal handling
+    // Use localStorage for data storage/retrieval
+    
+    // Function to retrieve users from localStorage
+    function getUsers() {
+      let users = JSON.parse(localStorage.getItem('users'));
+      return users ? users : [];
+    }
+
+    // Function to save users to localStorage
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    // Function to display users in the table
+    function displayUsers(users) {
+      let userTableBody = document.getElementById('userTableBody');
+      userTableBody.innerHTML = '';
+      users.forEach(function(user) {
+        let row = `<tr>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.contactNumber}</td>
+                    <td>${user.location}</td>
+                    <td>
+                      <button type="button" class="btn btn-primary" onclick="openEditUserModal(${user.id})">Edit</button>
+                      <button type="button" class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button>
+                    </td>
+                  </tr>`;
+        userTableBody.innerHTML += row;
+      });
+    }
+
+    // Function to search users by username
+    function searchUsers() {
+      let keyword = document.getElementById('searchInput').value.toLowerCase();
+      let users = getUsers();
+      let filteredUsers = users.filter(function(user) {
+        return user.username.toLowerCase().includes(keyword);
+      });
+      displayUsers(filteredUsers);
+    }
+
+    // Function to open create user modal
+    function openCreateUserModal() {
+      $('#userModal').modal('show');
+      document.getElementById('userForm').reset();
+      document.getElementById('saveUserBtn').setAttribute('onclick', 'createUser()');
+    }
+
+    // Function to create a new user
+    function createUser() {
+      let username = document.getElementById('username').value;
+      let email = document.getElementById('email').value;
+      let password = document.getElementById('password').value;
+      let confirmPassword = document.getElementById('confirmPassword').value;
+      let contactNumber = document.getElementById('contactNumber').value;
+      let location = document.getElementById('location').value;
+      
+      if (password !== confirmPassword) {
+        alert("Passwords don't match");
+        return;
+      }
+
+      let newUser = {
+        id: Date.now(),
+        username: username,
+        email: email,
+        password: password,
+        contactNumber: contactNumber,
+        location: location
+      };
+
+      let users = getUsers();
+      users.push(newUser);
+      saveUsers(users);
+
+      $('#userModal').modal('hide');
+      displayUsers(users);
+    }
+
+    // Function to open edit user modal
+    function openEditUserModal(userId) {
+      let users = getUsers();
+      let user = users.find(u => u.id === userId);
+      if (!user) {
+        alert('User not found');
+        return;
+      }
+
+      $('#userModal').modal('show');
+      document.getElementById('username').value = user.username;
+      document.getElementById('email').value = user.email;
+      document.getElementById('contactNumber').value = user.contactNumber;
+      document.getElementById('location').value = user.location;
+      document.getElementById('saveUserBtn').setAttribute('onclick', `editUser(${userId})`);
+    }
+
+    // Function to edit a user
+    function editUser(userId) {
+      let users = getUsers();
+      let userIndex = users.findIndex(u => u.id === userId);
+      if (userIndex === -1) {
+        alert('User not found');
+        return;
+      }
+
+      let username = document.getElementById('username').value;
+      let email = document.getElementById('email').value;
+      let contactNumber = document.getElementById('contactNumber').value;
+      let location = document.getElementById('location').value;
+
+      users[userIndex].username = username;
+      users[userIndex].email = email;
+      users[userIndex].contactNumber = contactNumber;
+      users[userIndex].location = location;
+
+      saveUsers(users);
+
+      $('#userModal').modal('hide');
+      displayUsers(users);
+    }
+
+    // Function to delete user
+    function deleteUser(userId) {
+      let users = getUsers();
+      let userIndex = users.findIndex(u => u.id === userId);
+      if (userIndex === -1) {
+        alert('User not found');
+        return;
+      }
+
+      users.splice(userIndex, 1);
+      saveUsers(users);
+      displayUsers(users);
+    }
+
+    // Initialize the page
+    function init() {
+      let users = getUsers();
+      displayUsers(users);
+    }
+
+    // Call init function when the page loads
+    window.onload = init;
+  </script> -->
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Load existing users from localStorage
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+  
+    // Function to render user form
+    function renderUserForm() {
+      let formHTML = `
+        <h3>Add/Edit User</h3>
+        <form id="userForm">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" class="form-control" id="startDate" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="contactNumber">Contact Number:</label>
+            <input type="text" class="form-control" id="contactNumber" required>
+          </div>
+          <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" class="form-control" id="location" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      `;
+      document.getElementById("userForm").innerHTML = formHTML;
+  
+      // Add event listener for form submission
+      document.getElementById("userForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        let newUser = {
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          startDate: document.getElementById("startDate").value,
+          email: document.getElementById("email").value,
+          contactNumber: document.getElementById("contactNumber").value,
+          location: document.getElementById("location").value
+        };
+        if (validatePassword(newUser.password, document.getElementById("confirmPassword").value)) {
+          saveUser(newUser);
+          renderUserList();
+          document.getElementById("userForm").reset();
+        } else {
+          alert("Passwords do not match.");
+        }
+      });
+    }
+  
+    // Function to validate password
+    function validatePassword(password, confirmPassword) {
+      return password === confirmPassword;
+    }
+  
+    // Function to save user to localStorage
+    function saveUser(user) {
+      users.push(user);
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+  
+    // Function to render user list
+    function renderUserList() {
+      let userListHTML = `
+        <h3>User List</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Start Date</th>
+              <th>Contact Number</th>
+              <th>Location</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      users.forEach(function(user, index) {
+        userListHTML += `
+          <tr>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.startDate}</td>
+            <td>${user.contactNumber}</td>
+            <td>${user.location}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" onclick="editUser(${index})">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteUser(${index})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+      userListHTML += `
+          </tbody>
+        </table>
+      `;
+      document.getElementById("userList").innerHTML = userListHTML;
+    }
+  
+    // Function to delete user
+    function deleteUser(index) {
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUserList();
+    }
+  
+    // Function to edit user
+    function editUser(index) {
+      let user = users[index];
+      document.getElementById("username").value = user.username;
+      document.getElementById("startDate").value = user.startDate;
+      document.getElementById("email").value = user.email;
+      document.getElementById("contactNumber").value = user.contactNumber;
+      document.getElementById("location").value = user.location;
+  
+      // Remove the user from the list
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+  
+      renderUserForm();
+    }
+  
+    // Initial render
+    renderUserForm();
+    renderUserList();
+  });
+</script>   -->
+

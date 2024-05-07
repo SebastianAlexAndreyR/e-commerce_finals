@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="register.css">
+
+    <style>
+        body {
+    margin: 0;
+    padding: 0;
+    font-family:Verdana, Geneva, Tahoma, sans-serif ;
+    background: linear-gradient(120deg, #0047A7, #29D3FD);
+    /* background-image: url('loginbg.png'); */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 400px;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666666;
+}
+
+.container input {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    color: #666666;
+}
+
+.container .password-field {
+    position: relative;
+}
+
+.container .password-field input[type="password"] {
+    width: 95.5%;
+}
+
+.container .password-field .eye-icon {
+    position: absolute;
+    right: -10px;
+    top: 4px; /* Adjust the top position for alignment */
+    cursor: pointer;
+}
+
+.container .password-field .eye-icon img {
+    width: 20px; /* Set the width of the eye icon image */
+    height: auto; /* Automatically adjust height to maintain aspect ratio */
+}
+
+.container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #2691d9;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 25px;
+    font-size: 18px;
+    color: #e9f4fb;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+}
+
+.container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.already{
+    margin: 30px 0;
+    text-align: center;
+    font-size: 16px;
+    color: #666666;
+    padding-bottom: 0;
+    height: 1px;
+}
+.already a{
+    color: #2691d9;
+    text-decoration: none;
+}
+.already a:hover{
+    text-decoration: underline;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register your account</h2>
+        <form id="registrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <div class="password-field">
+                <input type="password" id="password" name="password" required>
+                <!-- Eye Icon for Password Visibility -->
+                <!-- <span id="togglePassword" class="eye-icon">
+                    <img src="img/eye_close.png" alt="Toggle Password Visibility" id="eyeIcon">
+                </span> -->
+            </div>
+
+            <label for="confirm_password">Confirm Password:</label>
+            <div class="password-field">
+                <input type="password" id="confirm_password" name="confirm_password" required>
+                <!-- Eye Icon for Confirm Password Visibility -->
+                <!-- <span id="toggleConfirmPassword" class="eye-icon">
+                    <img src="img/eye_close.png" alt="Toggle Password Visibility" id="confirmEyeIcon">
+                </span> -->
+            </div>
+
+           <a ><input href="login.html" type="submit" value="Register"></a>
+        </form>
+        <div class="already">
+            <h5>Already have an account?<a href="login.html">Login</a></h5>
+        </div>
+    </div>
+
+    <script>
+        // Function to register a new user
+function registerUser(username, email, password) {
+    // Check if the user already exists
+    if (localStorage.getItem(email)) {
+        return false; // User already exists
+    } else {
+        // Create a new user object
+        const newUser = { username: username, email: email, password: password };
+        // Store the user object in localStorage with the email as the key
+        localStorage.setItem(email, JSON.stringify(newUser));
+        return true; // Registration successful
+    }
+}
+
+document.getElementById('registrationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Retrieve form inputs
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirm_password = document.getElementById('confirm_password').value;
+
+    // Check if passwords match
+    if (password !== confirm_password) {
+        alert('Passwords do not match');
+        return;
+    }
+
+    // Attempt to register the user
+    if (registerUser(username, email, password)) {
+        alert('Registration successful!');
+        // Redirect to login page after successful registration
+        redirectToLogin();
+    } else {
+        alert('User already exists with this email');
+    }
+});
+
+function redirectToLogin() {
+    // Redirect to the login window
+    window.location.href = "login.html";
+}
+    </script>
+</body>
+</html>
